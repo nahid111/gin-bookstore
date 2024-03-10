@@ -24,10 +24,11 @@ Based on the [article](https://blog.logrocket.com/how-to-build-a-rest-api-with-g
 
 ## ToDo
 
+- ✅ CRUD
+- ✅ Logging
 - ✅ Auth middleware JWT
 - ✅ Validation
 - ⬜ Migrations
-- ⬜ logging
 - ⬜ pagination
 - ⬜ filter
 - ⬜ rate limiting

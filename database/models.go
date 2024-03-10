@@ -4,16 +4,16 @@ import (
 	"time"
 
 	"gorm.io/gorm"
-    "gorm.io/gorm/clause"
+	"gorm.io/gorm/clause"
 )
 
 type User struct {
-    gorm.Model
-    Name      string `gorm:"not null"`
-    Email     string `gorm:"unique;not null"`
-    Password  string `gorm:"not null" json:"-"`
-    LastLogin time.Time
-    Books     []Book 
+	gorm.Model
+	Name      string `gorm:"not null"`
+	Email     string `gorm:"unique;not null"`
+	Password  string `gorm:"not null" json:"-"`
+	LastLogin time.Time
+	Books     []Book `gorm:"foreignKey:UserID"`
 }
 
 type Book struct {
@@ -25,6 +25,6 @@ type Book struct {
 
 // OnDelete CASCADE: Delete associated Books on User deletion
 func (m *User) AfterDelete(tx *gorm.DB) (err error) {
-    tx.Clauses(clause.Returning{}).Where("user_id = ?", m.ID).Delete(&Book{})
-    return
+	tx.Clauses(clause.Returning{}).Where("user_id = ?", m.ID).Delete(&Book{})
+	return
 }
