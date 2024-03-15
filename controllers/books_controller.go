@@ -9,7 +9,12 @@ import (
 	"gin-bookstore/database"
 )
 
-// GET /books
+// @Summary list books
+// @Description get list of books
+// @Tags books
+// @Produce json
+// @Success 200 {array} database.Book
+// @Router /books [get]
 func FindBooks(c *gin.Context) {
 	books, err := crud.ReadBooks()
 	if err != nil {

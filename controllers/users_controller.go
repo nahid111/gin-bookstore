@@ -9,7 +9,12 @@ import (
 	"gin-bookstore/database"
 )
 
-// GET /users
+// @Summary list users
+// @Description get list of users
+// @Tags users
+// @Produce json
+// @Success 200 {array} database.User
+// @Router /users [get]
 func FindUsers(c *gin.Context) {
 	users, err := crud.ReadUsers()
 	if err != nil {

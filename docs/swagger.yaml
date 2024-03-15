@@ -1,0 +1,85 @@
+definitions:
+  database.Book:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      id:
+        type: integer
+      title:
+        type: string
+      updatedAt:
+        type: string
+      user:
+        $ref: '#/definitions/database.User'
+      userID:
+        type: integer
+    type: object
+  database.User:
+    properties:
+      books:
+        items:
+          $ref: '#/definitions/database.Book'
+        type: array
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        type: string
+      id:
+        type: integer
+      lastLogin:
+        type: string
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  gorm.DeletedAt:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: REST API using gin and gorm
+  title: gin-bookstore
+  version: "1.0"
+paths:
+  /books:
+    get:
+      description: get list of books
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Book'
+            type: array
+      summary: list books
+      tags:
+      - books
+  /users:
+    get:
+      description: get list of users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.User'
+            type: array
+      summary: list users
+      tags:
+      - users
+swagger: "2.0"

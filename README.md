@@ -5,7 +5,7 @@ Based on the [article](https://blog.logrocket.com/how-to-build-a-rest-api-with-g
 - install dependencies
 
   ```go
-  $ go mod download
+  $ go mod tidy
   ```
 
 - Create a **`.env`** file with vars from **`.env.example`**
@@ -22,12 +22,35 @@ Based on the [article](https://blog.logrocket.com/how-to-build-a-rest-api-with-g
   $ go run main.go --clean
   ```
 
+## API docs
+
+Add GOPATH to PATH
+
+- Add GOPATH to PATH
+
+  ```shell
+  $ export GOPATH=$(go env GOPATH)/bin
+  ```
+
+- Generate docs
+
+  ```shell
+  $ swag init --parseDependency --parseInternal
+  ```
+
+- Run the server and visit
+
+  ```shell
+  http://localhost:8080/swagger/index.html
+  ```
+
 ## ToDo
 
 - ✅ CRUD
 - ✅ Logging
 - ✅ Auth middleware JWT
 - ✅ Validation
+- ✅ API docs (swagger)
 - ⬜ Migrations
 - ⬜ pagination
 - ⬜ filter
