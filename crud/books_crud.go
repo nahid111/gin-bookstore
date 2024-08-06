@@ -9,14 +9,54 @@ import (
 	"gin-bookstore/logger"
 )
 
-func ReadBooks() ([]database.Book, error) {
-	var Books []database.Book
-	result := database.DB.Preload(clause.Associations).Find(&Books)
+// PaginatedBooks represents the paginated response
+type PaginatedBooks struct {
+	Books      []database.Book `json:"books"`
+	TotalCount int64           `json:"total_count"`
+	Page       int             `json:"page"`
+	PageSize   int             `json:"page_size"`
+	TotalPages int             `json:"total_pages"`
+}
+
+func ReadBooks(page, pageSize int) (PaginatedBooks, error) {
+	var books []database.Book
+	var totalCount int64
+
+	// Count total number of books
+	if err := database.DB.Model(&database.Book{}).Count(&totalCount).Error; err != nil {
+		logger.Error.Println(err)
+		return PaginatedBooks{}, err
+	}
+
+	// Calculate offset
+	offset := (page - 1) * pageSize
+
+	// Fetch books with pagination
+	result := database.DB.Preload(clause.Associations).
+		Offset(offset).
+		Limit(pageSize).
+		Find(&books)
+
 	if result.Error != nil {
 		logger.Error.Println(result.Error)
-		return nil, result.Error
+		return PaginatedBooks{}, result.Error
 	}
-	return Books, nil
+
+	// Calculate total pages
+	totalPages := int(totalCount) / pageSize
+	if int(totalCount)%pageSize != 0 {
+		totalPages++
+	}
+
+	paginatedResponse := PaginatedBooks{
+		Books:      books,
+		TotalCount: totalCount,
+		Page:       page,
+		PageSize:   pageSize,
+		TotalPages: totalPages,
+	}
+
+	return paginatedResponse, nil
 }
 
 func ReadBookBy(field string, value any) (database.Book, error) {

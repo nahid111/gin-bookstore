@@ -52,7 +52,7 @@ Add GOPATH to PATH
 - ✅ Validation
 - ✅ API docs (swagger)
 - ⬜ Migrations
-- ⬜ pagination
+- ✅ pagination
 - ⬜ filter
 - ⬜ rate limiting
 - ⬜ handle timeouts

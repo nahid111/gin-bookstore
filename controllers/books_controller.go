@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -16,12 +17,31 @@ import (
 // @Success 200 {array} database.Book
 // @Router /books [get]
 func FindBooks(c *gin.Context) {
-	books, err := crud.ReadBooks()
+	// Get page and pageSize from query parameters
+	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
+	pageSize, _ := strconv.Atoi(c.DefaultQuery("pageSize", "10"))
+
+	// Ensure page and pageSize are valid
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 {
+		pageSize = 10
+	}
+
+	paginatedBooks, err := crud.ReadBooks(page, pageSize)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": books, "count": len(books)})
+
+	c.JSON(http.StatusOK, gin.H{
+		"data":        paginatedBooks.Books,
+		"total_count": paginatedBooks.TotalCount,
+		"page":        paginatedBooks.Page,
+		"page_size":   paginatedBooks.PageSize,
+		"total_pages": paginatedBooks.TotalPages,
+	})
 }
 
 // GET /books/:id
