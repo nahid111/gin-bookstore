@@ -9,6 +9,18 @@ import (
 	"gin-bookstore/utils"
 )
 
+// LoginHandler handles user login requests.
+//
+// @Summary      User Login
+// @Description  Logs in a user with their email and password, returns an authentication token on success.
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        loginBody body database.CreateUserSchema true "Login credentials"
+// @Success      200  {object}  map[string]string "Successful login with token"
+// @Header       200  {string}  Authorization "Bearer <token>"  // Specify that a JWT token is returned in the Authorization header
+// @Failure      400  {object}  map[string]string "Invalid Credentials"
+// @Router       /auth [post]
 func LoginHandler(c *gin.Context) {
 	// Validate input
 	var input database.CreateUserSchema

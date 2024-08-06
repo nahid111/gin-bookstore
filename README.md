@@ -30,6 +30,7 @@ Add GOPATH to PATH
 
   ```shell
   $ export GOPATH=$(go env GOPATH)/bin
+  $ export GOPATH=$(go env GOPATH)/bin
   ```
 
 - Generate docs

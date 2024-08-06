@@ -10,11 +10,13 @@ import (
 	"gin-bookstore/database"
 )
 
-// @Summary list books
-// @Description get list of books
+// @Summary List books
+// @Description Get a list of books with pagination
 // @Tags books
 // @Produce json
-// @Success 200 {array} database.Book
+// @Param page query int false "Page number (default: 1)"
+// @Param pageSize query int false "Number of items per page (default: 10)"
+// @Success 200 {object} PaginatedBooksResponse
 // @Router /books [get]
 func FindBooks(c *gin.Context) {
 	// Get page and pageSize from query parameters
@@ -44,7 +46,14 @@ func FindBooks(c *gin.Context) {
 	})
 }
 
-// GET /books/:id
+// @Summary Get a book by ID
+// @Description Retrieve a book's details by its ID
+// @Tags books
+// @Produce json
+// @Param id path string true "Book ID"
+// @Success 200 {object} database.Book
+// @Failure 400 {object} ErrorResponse
+// @Router /books/{id} [get]
 func FindBook(c *gin.Context) {
 	book, err := crud.ReadBookBy("id", c.Param("id"))
 	if err != nil {
@@ -54,7 +63,16 @@ func FindBook(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": book})
 }
 
-// POST /books
+// @Summary Create a new book
+// @Description Add a new book to the collection
+// @Tags books
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param book body database.CreateBookSchema true "Book data"
+// @Success 200 {object} database.Book
+// @Failure 400 {object} ErrorResponse
+// @Router /books [post]
 func CreateBook(c *gin.Context) {
 	// Validate input
 	var input database.CreateBookSchema
@@ -75,7 +93,17 @@ func CreateBook(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": book})
 }
 
-// PATCH /books/:id
+// @Summary Update a book by ID
+// @Description Modify the details of a book by its ID
+// @Tags books
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Book ID"
+// @Param book body database.UpdateBookSchema true "Updated book data"
+// @Success 200 {object} database.Book
+// @Failure 400 {object} ErrorResponse
+// @Router /books/{id} [put]
 func UpdateBook(c *gin.Context) {
 	// Validate input
 	var input database.UpdateBookSchema
@@ -92,7 +120,15 @@ func UpdateBook(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": book})
 }
 
-// DELETE /books/:id
+// @Summary Delete a book by ID
+// @Description Remove a book from the collection by its ID
+// @Tags books
+// @Produce json
+// @Security BearerAuth
+// @Param id path string true "Book ID"
+// @Success 200 {object} database.Book
+// @Failure 400 {object} ErrorResponse
+// @Router /books/{id} [delete]
 func DeleteBook(c *gin.Context) {
 	book, err := crud.DeleteBookByID(c.Param("id"))
 	if err != nil {
@@ -100,4 +136,20 @@ func DeleteBook(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"data": book})
+}
+
+// PaginatedBooksResponse represents the structure of the response for paginated books
+// @Description Response structure for paginated list of books
+// @Param data query []database.Book true "List of books"
+// @Param total_count query int true "Total number of books"
+// @Param page query int true "Current page number"
+// @Param page_size query int true "Number of items per page"
+// @Param total_pages query int true "Total number of pages"
+// @Success 200 {object} PaginatedBooksResponse
+type PaginatedBooksResponse struct {
+	Data        []database.Book `json:"data"`
+	TotalCount  int             `json:"total_count"`
+	Page        int             `json:"page"`
+	PageSize    int             `json:"page_size"`
+	TotalPages  int             `json:"total_pages"`
 }

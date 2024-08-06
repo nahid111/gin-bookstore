@@ -20,6 +20,9 @@ import (
 // @description REST API using gin and gorm
 // @host localhost:8080
 // @BasePath
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	// Check for cmd args
 	if len(os.Args) > 1 {
